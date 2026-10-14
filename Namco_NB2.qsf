@@ -49,6 +49,16 @@ set_global_assignment -name PERIPHERY_TO_CORE_PLACEMENT_AND_ROUTING_OPTIMIZATION
 set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON
 set_global_assignment -name ALM_REGISTER_PACKING_EFFORT MEDIUM
 set_global_assignment -name SEED 7
+# [MiSTer-DB9 BEGIN] - fitter seed for the DB9 build
+# The joydb wrapper shifts the netlist enough that SEED 7 above misses setup
+# on clk_sys by about 0.09 ns (TG68K paths, not DB9 logic). A sweep of seeds
+# 1-6 gave seed 5 the best worst-case slack (+0.252 ns over every domain).
+# SEED is last-wins, so this line overrides the one above.
+#
+# If an upstream merge shifts the netlist, re-verify this seed: a stale pin
+# still builds green, since STA cannot see fitter-variance breakage.
+set_global_assignment -name SEED 5
+# [MiSTer-DB9 END]
 
 # framebuffer for the OSD Orientation Vertical CW/CCW (screen_rotate)
 set_global_assignment -name VERILOG_MACRO "MISTER_FB=1"
